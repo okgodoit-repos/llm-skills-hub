@@ -1,6 +1,6 @@
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Container,
@@ -15,24 +15,30 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { BaseUrl } from '~/config';
 
-import supabase from '~/supabase';
-
-type Form = {
-  name_human: string;
-  name_model: string;
-  description_human: string;
-  description_model: string;
+type Plugin = {
+  human_name: string;
+  model_name: string;
+  human_description: string;
+  model_description: string;
   spec_url: string;
   logo_url: string;
 };
 
 function AddPluginModal({ open, onClose }: { open: boolean; onClose(): void }) {
-  const { control, handleSubmit } = useForm<Form>();
+  const { control, handleSubmit } = useForm<Plugin>();
 
   const mutation = useMutation({
-    mutationFn: (data: Form): any => {
-      console.log(data);
+    mutationFn: async (data: Plugin) => {
+      await fetch(`${BaseUrl}/apis`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      console.log('Sending data: ', data);
       return;
     },
   });
@@ -45,58 +51,76 @@ function AddPluginModal({ open, onClose }: { open: boolean; onClose(): void }) {
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
-            name="name_human"
+            name="human_name"
             control={control}
             render={({ field }) => (
-              <TextField {...field} margin="dense" label="Name for human" fullWidth />
+              <TextField {...field} margin="dense" label="Name for human" required fullWidth />
             )}
           />
           <Controller
-            name="name_model"
+            name="model_name"
             control={control}
             render={({ field }) => (
-              <TextField {...field} margin="dense" label="Name for model" fullWidth />
+              <TextField {...field} margin="dense" label="Name for model" required fullWidth />
             )}
           />
           <Controller
-            name="description_human"
+            name="human_description"
             control={control}
             render={({ field }) => (
-              <TextField {...field} margin="dense" label="Description for human" fullWidth />
+              <TextField
+                {...field}
+                margin="dense"
+                label="Description for human"
+                required
+                fullWidth
+              />
             )}
           />
           <Controller
-            name="description_model"
+            name="model_description"
             control={control}
             render={({ field }) => (
-              <TextField {...field} margin="dense" label="Description for model" fullWidth />
+              <TextField
+                {...field}
+                margin="dense"
+                label="Description for model"
+                required
+                fullWidth
+              />
             )}
           />
           <Controller
             name="spec_url"
             control={control}
             render={({ field }) => (
-              <TextField {...field} margin="dense" label="URL of spec" fullWidth />
+              <TextField {...field} margin="dense" label="URL of spec" required fullWidth />
             )}
           />
           <Controller
             name="logo_url"
             control={control}
             render={({ field }) => (
-              <TextField {...field} margin="dense" label="URL of logo" fullWidth />
+              <TextField {...field} margin="dense" label="URL of logo" required fullWidth />
             )}
           />
 
-          <Button size="large" type="submit" sx={{ mt: 2 }} variant="contained">
+          <LoadingButton
+            size="large"
+            type="submit"
+            sx={{ mt: 2 }}
+            variant="contained"
+            loading={mutation.isLoading}
+          >
             Submit
-          </Button>
+          </LoadingButton>
         </form>
       </DialogContent>
     </Dialog>
   );
 }
 
-function PluginCard({ plugin }: { plugin: any }) {
+function PluginCard({ plugin }: { plugin: Plugin }) {
   return (
     <Card sx={{ width: 350, boxShadow: 0.5, backgroundColor: '#FAFAFF' }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -106,8 +130,8 @@ function PluginCard({ plugin }: { plugin: any }) {
           src={plugin.logo_url}
           sx={{ width: 100, height: 100, borderRadius: 2 }}
         />
-        <Typography variant="h5">{plugin.name}</Typography>
-        <Typography variant="body1">{plugin.description}</Typography>
+        <Typography variant="h5">{plugin.human_name}</Typography>
+        <Typography variant="body1">{plugin.human_description}</Typography>
       </CardContent>
     </Card>
   );
@@ -119,8 +143,10 @@ export default function Home() {
   const query = useQuery({
     queryKey: ['plugins'],
     queryFn: async () => {
-      const { data } = await supabase.from('plugins').select().throwOnError();
-      return data;
+      const res = await fetch(`${BaseUrl}/apis`);
+      const json = (await res.json()) as Plugin[];
+      console.log('Received data: ', json);
+      return json;
     },
   });
 
@@ -132,7 +158,7 @@ export default function Home() {
     <Container sx={{ py: 4 }}>
       <Typography variant="h3">Plugins</Typography>
       <Divider sx={{ py: 2 }} />
-      <Box sx={{ py: 2 }}>
+      <Box sx={{ py: 2, display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
         {query.data?.map((plugin, idx) => (
           <PluginCard key={idx} plugin={plugin} />
         ))}

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "gen-types": "npx supabase gen types typescript --local > src/db.types.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -13,8 +12,8 @@
     "@emotion/react": "^11.10.6",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.6",
+    "@mui/lab": "^5.0.0-alpha.124",
     "@mui/material": "^5.11.14",
-    "@supabase/supabase-js": "^2.12.1",
     "@tanstack/react-query": "^4.28.0",
     "@types/node": "18.15.9",
     "@types/react": "18.0.29",
