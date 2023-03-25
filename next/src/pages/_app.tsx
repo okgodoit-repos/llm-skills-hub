@@ -24,7 +24,7 @@ export default function App(props: AppProps & { emotionCache: any }) {
       </Head>
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />;
+        <Component {...pageProps} />
       </QueryClientProvider>
     </CacheProvider>
   );
