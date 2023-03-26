@@ -1,4 +1,4 @@
-###SkillsHub is ChapGPT Plugins for the rest of us. A hub of plugins to call API's and a chat interface using langchain that can automatically determine the appropriate APIs to use, and then use them to fulfill a user's request.
+__SkillsHub is ChapGPT Plugins for the rest of us. A hub of plugins to call API's and a chat interface using langchain that can automatically determine the appropriate APIs to use, and then use them to fulfill a user's request.__
 
 SkillsHub is a public registry (think like npm) where anyone can register their own skill plugins using the exact same format at ChatGPT Plugins.  That means there is zero extra effort to add your ChatGPT plugin to SkillsHub.  As an example, we've directly added the Klarna ChatGPT plugin from their public plugin definition url.  We've also seeded some additional API's using industry standard OpenAPI specs, including the weather.gov API and even a chuck norris joke api.
 
