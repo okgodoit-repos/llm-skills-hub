@@ -1,3 +1,4 @@
+import { DeleteOutline } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Box,
@@ -9,15 +10,19 @@ import {
   DialogTitle,
   Divider,
   Fab,
+  IconButton,
   TextField,
   Typography,
 } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+
 import { BaseUrl } from '~/config';
+import { queryClient } from '~/query-client';
 
 type Plugin = {
+  api_id?: string;
   human_name: string;
   model_name: string;
   human_description: string;
@@ -41,9 +46,15 @@ function AddPluginModal({ open, onClose }: { open: boolean; onClose(): void }) {
       console.log('Sending data: ', data);
       return;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['plugins'] });
+    },
   });
 
-  const onSubmit = (data: any) => mutation.mutate(data);
+  const onSubmit = async (data: any) => {
+    await mutation.mutateAsync(data);
+    onClose();
+  };
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -121,9 +132,32 @@ function AddPluginModal({ open, onClose }: { open: boolean; onClose(): void }) {
 }
 
 function PluginCard({ plugin }: { plugin: Plugin }) {
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await fetch(`${BaseUrl}/apis/${plugin.api_id}`, {
+        method: 'DELETE',
+      });
+      console.log(`Deleting plugin ${plugin.human_name}`);
+      return;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['plugins'] });
+    },
+  });
+
   return (
     <Card sx={{ width: 350, boxShadow: 0.5, backgroundColor: '#FAFAFF' }}>
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1, position: 'relative' }}>
+        <IconButton
+          size="small"
+          color="error"
+          sx={{ position: 'absolute', right: 2, top: 2 }}
+          onClick={() => mutation.mutate()}
+          disabled={mutation.isSuccess}
+        >
+          <DeleteOutline />
+        </IconButton>
+
         <Box
           component="img"
           alt="logo"
@@ -166,6 +200,7 @@ export default function Home() {
 
       <AddPluginModal open={open} onClose={onClose} />
       <Fab
+        color="primary"
         sx={{ position: 'absolute', bottom: 12, right: 12 }}
         variant="extended"
         onClick={() => setOpen(true)}

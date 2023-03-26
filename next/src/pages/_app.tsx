@@ -1,15 +1,14 @@
 import { CacheProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import { QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import createEmotionCache from '../createEmotionCache';
+
+import createEmotionCache from '~/createEmotionCache';
+import { queryClient } from '~/query-client';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
-
-const queryClient = new QueryClient();
 
 export default function App(props: AppProps & { emotionCache: any }) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
