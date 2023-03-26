@@ -1,7 +1,8 @@
-import { DeleteOutline } from '@mui/icons-material';
+import { ChatBubbleOutline, DeleteOutline } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Container,
@@ -15,6 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -190,7 +192,16 @@ export default function Home() {
 
   return (
     <Container sx={{ py: 4 }}>
-      <Typography variant="h3">Plugins</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="h3">Plugins</Typography>
+        <Link href="/chat" style={{ textDecoration: 'none' }}>
+          <Button variant="outlined">
+            <ChatBubbleOutline sx={{ mr: 1 }} />
+            Chat
+          </Button>
+        </Link>
+      </Box>
+
       <Divider sx={{ py: 2 }} />
       <Box sx={{ py: 2, display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2 }}>
         {query.data?.map((plugin, idx) => (

@@ -11,5 +11,7 @@ type ResponseData = {
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const data: RequestData = req.body;
+  console.log('Received data', data);
+
   res.status(200).json({ messages: [...data.messages, 'hello'] });
 }
