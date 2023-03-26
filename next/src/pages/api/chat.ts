@@ -1,16 +1,33 @@
+import { OpenAI } from 'langchain';
+import { initializeAgentExecutor } from 'langchain/agents';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 type RequestData = {
-  messages: string[];
+  message: string;
 };
 
 type ResponseData = {
-  messages: string[];
+  message: string;
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   const data: RequestData = req.body;
   console.log('Received data', data);
 
-  res.status(200).json({ messages: [...data.messages, 'hello'] });
+  const model = new OpenAI({ temperature: 0 });
+  const tools: any[] = [];
+
+  const executor = await initializeAgentExecutor(tools, model, 'zero-shot-react-description');
+
+  console.log('Loaded agent.');
+
+  const input = data.message;
+
+  console.log(`Executing with input "${input}"...`);
+
+  const result = await executor.call({ input });
+
+  console.log(`Got output ${result.output}`);
+
+  res.status(200).json(result.output);
 }

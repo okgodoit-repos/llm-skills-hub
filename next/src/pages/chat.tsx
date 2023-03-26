@@ -17,22 +17,23 @@ export default function Home() {
   const [input, setInput] = useState('');
 
   const chat = useMutation({
-    mutationFn: async (data: string[]): Promise<void> => {
-      const newMessages = await fetch('/api/chat', {
+    mutationFn: async (data: string): Promise<void> => {
+      const newMessage = await fetch('/api/chat', {
         method: 'POST',
-        body: JSON.stringify({ messages: data }),
+        body: JSON.stringify({ message: data }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      const json = await newMessages.json();
-      setMessages(json.messages);
+      const json = await newMessage.json();
+      setMessages([...messages, json.message]);
     },
   });
 
   const sendMessage = () => {
-    chat.mutate([...messages, input]);
+    chat.mutate(input);
     setInput('');
+    setMessages([...messages, input]);
   };
 
   return (
