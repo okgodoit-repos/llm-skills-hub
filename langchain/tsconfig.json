@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"target": "ES2022",
+		"module": "nodenext",
+		"allowImportingTsExtensions": true
+	},
+	"type": "module",
+	"include": ["**.ts"],
+  	"exclude": ["node_modules"]
+}
