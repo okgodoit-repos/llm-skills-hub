@@ -59,7 +59,13 @@ OpenAPI Spec: ${apiUrlJson}`,
 		description,
 		apiurl
 	) {
-		const apiUrlJson = await apiurl;
+		const apiSpec = await fetch(apiurl);
+		if (!apiSpec.ok) {
+			throw new Error(
+				`Failed to fetch API spec from ${apiurl} with status ${apiSpec.status}`
+			);
+		}
+		const apiUrlJson = await apiSpec.json();
 
 		return new SkillHubPluginTool({
 			name: name,
