@@ -25,7 +25,7 @@ The team
 ![The team](https://okgodoit.com/skillshub/10.png)
 
 Status and what's next?
-The SkillsHub repo need user accounts so anyone can submit.  The langchain implementation needs to be made more robust, and the chat webpage needs better feedback so you can understand what it's actually doing.  We need to make it work with different LLm backends Basically polish.
+The SkillsHub repo need user accounts so anyone can submit.  The langchain implementation needs to be made more robust, and the chat webpage needs better feedback so you can understand what it's actually doing.  We need to make it work with different LLM backends.
 
 Reach out to discuss further!
 @okgodoit or roger@okgodoit.com
